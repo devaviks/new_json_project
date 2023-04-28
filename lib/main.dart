@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if(data.hasError){
               return Center(child: Text("${data.error}"));
             }else if(data.hasData){
-              var items =data.data as List<products>;
+              var items = data.data as List<Products>;
               return ListView.builder(
                   itemCount: items == null? 0: items.length,
                   itemBuilder: (context,index){
@@ -87,10 +87,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<List<products>> ReadJsonData() async{
+  Future<List<Products>?> ReadJsonData() async{
     final jsondata = await rootBundle.rootBundle.loadString('assets/dummy.json');
-    final list = json.decode(jsondata) as List<dynamic>;
-    return list.map((e) => products.fromJson(e)).toList();
+    Map<String, dynamic> valueMap = json.decode(jsondata);
+
+    ProductsModel user = ProductsModel.fromJson(valueMap); // here the error is coming
+
+    ///final list = json.decode(jsondata);
+    return user.products;
   }
 }
 
