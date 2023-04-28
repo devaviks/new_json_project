@@ -1,9 +1,7 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' as rootBundle;
+import 'package:new_json_project/textdata.dart';
 
-import 'modal/Products.dart';
 
 void main() {
   runApp(MyApp());
@@ -35,67 +33,72 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder(
-          future: ReadJsonData(),
-          builder: (context,data){
-            if(data.hasError){
-              return Center(child: Text("${data.error}"));
-            }else if(data.hasData){
-              var items = data.data as List<Products>;
-              return ListView.builder(
-                  itemCount: items == null? 0: items.length,
-                  itemBuilder: (context,index){
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: Text("Json Sorting"),
+      ),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: SingleChildScrollView(
+          physics: ScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Title and Description",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18
+                  ),
+                ),
+              ),
+              ListView.builder(
+                  physics: ScrollPhysics(),
+                  itemCount: 9,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
                     return Card(
-                      elevation: 5,
-                      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 6),
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Image(image: NetworkImage(items[index].images.toString()),fit: BoxFit.fill,),
-                            ),
-                            Expanded(child: Container(
-                              padding: EdgeInsets.only(bottom: 8),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(padding: EdgeInsets.only(left: 8,right: 8),child: Text(items[index].title.toString(),style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold
-                                  ),),),
-                                  Padding(padding: EdgeInsets.only(left: 8,right: 8),child: Text(items[index].description.toString()),)
-                                ],
-                              ),
-                            ))
-                          ],
-                        ),
-                      ),
+                      child: ListTile(
+                          title: Text('MACBOOK $index'),
+                          subtitle: Text(
+                              'this is the description of the macbook')),
                     );
                   }
-              );
-            }else{
-              return Center(child: CircularProgressIndicator(),);
-            }
-          },
-        )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Images",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                      fontSize: 18
+                ),
+                ),
+              ),
+              Container(
+                height: 100,
+                child: ListView.builder(
+                    physics: ScrollPhysics(),
+                    itemCount: 10,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: Image.network(
+                          'https://i.dummyjson.com/data/products/7/3.jpg',),
+                      );
+                    }
+
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
-
-  Future<List<Products>?> ReadJsonData() async{
-    final jsondata = await rootBundle.rootBundle.loadString('assets/dummy.json');
-    Map<String, dynamic> valueMap = json.decode(jsondata);
-
-    ProductsModel user = ProductsModel.fromJson(valueMap); // here the error is coming
-
-    ///final list = json.decode(jsondata);
-    return user.products;
-  }
 }
-
-
