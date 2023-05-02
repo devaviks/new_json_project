@@ -50,29 +50,48 @@ class _MyHomePageState extends State<MyHomePage> {
                       margin: EdgeInsets.symmetric(horizontal: 10,vertical: 6),
                       child: Container(
                         padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Column(
                           children: [
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Image(image: NetworkImage(items[index].images.toString()),fit: BoxFit.fill,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: Image(image: NetworkImage(items[index].images.toString()),fit: BoxFit.fill,),
+                                ),
+                                Expanded(child: Container(
+                                  padding: EdgeInsets.only(bottom: 8),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(padding: EdgeInsets.only(left: 8,right: 8),child: Text(items[index].title.toString(),style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold
+                                      ),),),
+                                      Padding(padding: EdgeInsets.only(left: 8,right: 8),child: Text(items[index].description.toString()),)
+                                    ],
+                                  ),
+                                )),
+                              ],
                             ),
-                            Expanded(child: Container(
-                              padding: EdgeInsets.only(bottom: 8),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(padding: EdgeInsets.only(left: 8,right: 8),child: Text(items[index].title.toString(),style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold
-                                  ),),),
-                                  Padding(padding: EdgeInsets.only(left: 8,right: 8),child: Text(items[index].description.toString()),)
-                                ],
+                            Container(
+                              height: 70,
+                              width: double.infinity,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: items[index].images!.length,
+                                  itemBuilder: (context,i){
+                                  return SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: Image(image: NetworkImage(items[index].images![i]),fit: BoxFit.fill),
+                                  );
+                                 }
                               ),
-                            ))
+                            )
                           ],
                         ),
                       ),
@@ -84,16 +103,14 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           },
         )
+
     );
   }
 
   Future<List<Products>?> ReadJsonData() async{
     final jsondata = await rootBundle.rootBundle.loadString('assets/dummy.json');
     Map<String, dynamic> valueMap = json.decode(jsondata);
-
-    ProductsModel user = ProductsModel.fromJson(valueMap); // here the error is coming
-
-    ///final list = json.decode(jsondata);
+    ProductsModel user = ProductsModel.fromJson(valueMap);
     return user.products;
   }
 }
