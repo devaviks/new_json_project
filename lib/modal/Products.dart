@@ -1,3 +1,10 @@
+import 'dart:convert';
+
+import 'package:floor/floor.dart';
+
+import '../constant.dart';
+
+
 class ProductsModel {
   List<Products>? products;
   int? total;
@@ -30,7 +37,9 @@ class ProductsModel {
   }
 }
 
-class Products {
+@Entity(tableName: articlesTableName)
+class Products{
+  @primaryKey
   int? id;
   String? title;
   String? description;
@@ -41,10 +50,12 @@ class Products {
   String? brand;
   String? category;
   String? thumbnail;
+  @TypeConverters([StringListConverter])
   List<String>? images;
 
   Products(
-      {this.id,
+      {
+        this.id,
         this.title,
         this.description,
         this.price,
@@ -70,6 +81,7 @@ class Products {
     images = json['images'].cast<String>();
   }
 
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
@@ -86,3 +98,28 @@ class Products {
     return data;
   }
 }
+
+class StringListConverter extends TypeConverter<List<String>,List<dynamic>> {
+  @override
+  List<String> fromJson(List<dynamic> json) {
+    return json.cast<String>();
+  }
+
+  @override
+  List<dynamic> toJson(List<String> object) {
+    return object.cast<dynamic>();
+  }
+
+  @override
+  List<String> decode(List databaseValue) {
+    // TODO: implement decode
+    throw UnimplementedError();
+  }
+
+  @override
+  List encode(List<String> value) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
+}
+
